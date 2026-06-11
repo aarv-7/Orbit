@@ -508,6 +508,23 @@
     </nav>
   </div>
 
+  <script>
+    // #region agent log
+    window.addEventListener('error', function (e) {
+      fetch('http://127.0.0.1:7806/ingest/122605cc-3e5c-4743-ad7d-81a79e4029bc', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f560de' }, body: JSON.stringify({ sessionId: 'f560de', location: 'index.html:script-error', message: 'Global script error', data: { msg: e.message, file: e.filename, line: e.lineno, col: e.colno }, timestamp: Date.now(), hypothesisId: 'A' }) }).catch(function () {});
+    });
+    // #endregion
+  </script>
   <script src="app.js"></script>
+  <script>
+    // #region agent log
+    fetch('http://127.0.0.1:7806/ingest/122605cc-3e5c-4743-ad7d-81a79e4029bc', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f560de' }, body: JSON.stringify({ sessionId: 'f560de', location: 'index.html:post-appjs', message: 'app.js load check', data: { nextOnboardingStepDefined: typeof nextOnboardingStep === 'function', completeOnboardingDefined: typeof completeOnboarding === 'function', stateDefined: typeof state !== 'undefined' }, timestamp: Date.now(), hypothesisId: 'A' }) }).catch(function () {});
+    document.querySelector('[data-step="1"] .btn-primary')?.addEventListener('click', function () {
+      var step1 = document.querySelector('.onboarding-step[data-step="1"]');
+      var step2 = document.querySelector('.onboarding-step[data-step="2"]');
+      fetch('http://127.0.0.1:7806/ingest/122605cc-3e5c-4743-ad7d-81a79e4029bc', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f560de' }, body: JSON.stringify({ sessionId: 'f560de', location: 'index.html:lets-go-click', message: 'Lets Go button clicked', data: { step1Active: step1?.classList.contains('active'), step2Active: step2?.classList.contains('active'), step2Display: step2 ? getComputedStyle(step2).display : null, handlerDefined: typeof nextOnboardingStep === 'function' }, timestamp: Date.now(), hypothesisId: 'B' }) }).catch(function () {});
+    });
+    // #endregion
+  </script>
 </body>
 </html>
