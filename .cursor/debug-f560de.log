@@ -1,0 +1,4 @@
+{"sessionId":"f560de","location":"index.html:post-appjs","message":"app.js load check","data":{"nextOnboardingStepDefined":true,"completeOnboardingDefined":true,"stateDefined":true},"timestamp":1781148502651,"hypothesisId":"A"}
+{"sessionId":"f560de","location":"app.js:nextOnboardingStep","message":"nextOnboardingStep invoked","data":{"stepsCount":2,"dotsCount":2,"step1Before":true,"step2Before":false},"timestamp":1781148503756,"hypothesisId":"B"}
+{"sessionId":"f560de","location":"app.js:nextOnboardingStep:after","message":"nextOnboardingStep completed","data":{"step1After":false,"step2After":true,"step2Display":"block"},"timestamp":1781148503758,"hypothesisId":"B"}
+{"sessionId":"f560de","location":"index.html:lets-go-click","message":"Lets Go button clicked","data":{"step1Active":false,"step2Active":true,"step2Display":"block","handlerDefined":true},"timestamp":1781148503758,"hypothesisId":"B"}
