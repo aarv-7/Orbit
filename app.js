@@ -94,7 +94,7 @@ const swapSuggestions = [
   { icon: '🚗 → 🚲', title: 'Bike to work tomorrow', desc: 'A 10 km ride instead of driving saves <strong>3.2 kg CO₂</strong> — like powering your home for half a day less.' },
   { icon: '🥛 → 🌾', title: 'Try oat milk in your coffee this week', desc: 'Switching 1L of dairy milk saves <strong>2.3 kg CO₂</strong> — as much as charging your phone for 6 months.' },
   { icon: '🍔 → 🍲', title: 'Cook dinner instead of ordering delivery', desc: 'Home cooking saves <strong>2.4 kg CO₂</strong> from packaging, transport, and food waste.' },
-  { icon: '🚿 → ⏱️', title: 'Take a 5-minute shower instead of 15', desc: 'Saving 10 minutes of hot water saves <strong>1.6 kg CO₂</strong> daily — that's 48 kg per month.' },
+  { icon: '🚿 → ⏱️', title: 'Take a 5-minute shower instead of 15', desc: 'Saving 10 minutes of hot water saves <strong>1.6 kg CO₂</strong> daily — that\\'s 48 kg per month.' },
   { icon: '☕ → 🏠', title: 'Brew coffee at home instead of takeaway', desc: 'Skipping the disposable cup and transport saves <strong>0.8 kg CO₂</strong> per cup.' },
 ];
 
