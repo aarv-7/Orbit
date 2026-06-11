@@ -1,4 +1,4 @@
-# CarbonLens AI (Project Orbit)
+# Orbit by CarbonLens AI
 
 ## 🌍 Chosen Vertical
 **Personal Carbon Footprint Tracking & Sustainable Behavior Change.**
