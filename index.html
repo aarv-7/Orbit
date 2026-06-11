@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit — See the Ripple of Every Choice</title>
+  <meta name="description" content="Orbit makes your climate impact visible, personal, and actionable — one smart swap at a time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <!-- ══════════════════════════════════════════════
+       ONBOARDING OVERLAY
+       ══════════════════════════════════════════════ -->
+  <div id="onboarding-overlay" class="onboarding-overlay">
+    <div class="onboarding-card">
+      <div class="onboarding-step active" data-step="1">
+        <div class="onboarding-icon">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="28" stroke="url(#grad1)" stroke-width="2.5" fill="none" />
+            <circle cx="32" cy="32" r="18" stroke="url(#grad1)" stroke-width="1.5" fill="none" opacity="0.5" />
+            <circle cx="32" cy="32" r="6" fill="url(#grad1)" />
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="64" y2="64">
+                <stop offset="0%" stop-color="#a78bfa" />
+                <stop offset="100%" stop-color="#6ee7b7" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h2>Welcome to Orbit</h2>
+        <p>See the invisible thread between your daily choices and the planet's health.</p>
+        <button class="btn-primary" onclick="nextOnboardingStep()">Let's Go</button>
+      </div>
+      <div class="onboarding-step" data-step="2">
+        <div class="onboarding-icon">🧠</div>
+        <h2>Quick Profile</h2>
+        <p>Help Orbit understand your lifestyle so we can find your highest-impact swaps.</p>
+        <div class="onboarding-form">
+          <label for="ob-diet">Diet Style</label>
+          <select id="ob-diet">
+            <option value="omnivore">Omnivore</option>
+            <option value="flexitarian">Flexitarian</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+          </select>
+          <label for="ob-transport">Primary Transport</label>
+          <select id="ob-transport">
+            <option value="car">Car (Gas/Diesel)</option>
+            <option value="hybrid">Hybrid / Electric</option>
+            <option value="public">Public Transit</option>
+            <option value="bike">Bike / Walk</option>
+          </select>
+          <label for="ob-housing">Housing Type</label>
+          <select id="ob-housing">
+            <option value="house">Detached House</option>
+            <option value="apartment-large">Large Apartment</option>
+            <option value="apartment-small">Small Apartment</option>
+            <option value="shared">Shared Housing</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="completeOnboarding()">Start My Orbit</button>
+      </div>
+    </div>
+    <div class="onboarding-dots">
+      <span class="dot active" data-dot="1"></span>
+      <span class="dot" data-dot="2"></span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MAIN APP
+       ══════════════════════════════════════════════ -->
+  <div id="app" class="app hidden">
+    <!-- Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="main-nav" class="main-nav">
+      <div class="nav-brand">
+        <svg class="nav-logo" width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="28" stroke="url(#navgrad)" stroke-width="2.5" fill="none" />
+          <circle cx="32" cy="32" r="18" stroke="url(#navgrad)" stroke-width="1.5" fill="none" opacity="0.5" />
+          <circle cx="32" cy="32" r="5" fill="url(#navgrad)" />
+          <defs>
+            <linearGradient id="navgrad" x1="0" y1="0" x2="64" y2="64">
+              <stop offset="0%" stop-color="#a78bfa" />
+              <stop offset="100%" stop-color="#6ee7b7" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="brand-text">Orbit</span>
+      </div>
+      <div class="nav-links">
+        <button class="nav-btn active" data-target="pulse" id="nav-pulse">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          <span>Pulse</span>
+        </button>
+        <button class="nav-btn" data-target="lens" id="nav-lens">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Lens</span>
+        </button>
+        <button class="nav-btn" data-target="simulator" id="nav-simulator">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <span>What If?</span>
+        </button>
+        <button class="nav-btn" data-target="ripple" id="nav-ripple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6" opacity="0.6"/><circle cx="12" cy="12" r="10" opacity="0.3"/></svg>
+          <span>Ripple</span>
+        </button>
+        <button class="nav-btn" data-target="circle" id="nav-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Circle</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ═══════ SURFACE: PULSE ═══════ -->
+    <section id="surface-pulse" class="surface active">
+      <div class="pulse-container">
+        <div class="pulse-ring-wrapper">
+          <canvas id="pulse-canvas" width="340" height="340"></canvas>
+          <div class="pulse-center">
+            <span class="pulse-arrow" id="pulse-arrow">↓</span>
+            <span class="pulse-percent" id="pulse-percent">12%</span>
+            <span class="pulse-label" id="pulse-label">Momentum</span>
+          </div>
+        </div>
+        <div class="pulse-stat-row">
+          <div class="pulse-stat">
+            <span class="stat-value" id="stat-saved">24.3</span>
+            <span class="stat-unit">kg CO₂ saved</span>
+          </div>
+          <div class="pulse-stat">
+            <span class="stat-value" id="stat-streak">7</span>
+            <span class="stat-unit">day streak</span>
+          </div>
+          <div class="pulse-stat">
+            <span class="stat-value" id="stat-swaps">5</span>
+            <span class="stat-unit">swaps made</span>
+          </div>
+        </div>
+
+        <!-- Today's Action Card -->
+        <div class="action-card" id="action-card">
+          <div class="action-card-badge">Today's Highest-Impact Swap</div>
+          <div class="action-card-body">
+            <div class="action-card-icon">🥩 → 🌱</div>
+            <h3 id="action-title">Swap beef for lentil bolognese tonight</h3>
+            <p id="action-desc">This single swap saves <strong>6.2 kg CO₂</strong> — equal to not driving for 3 days.</p>
+          </div>
+          <div class="action-card-actions">
+            <button class="btn-accent" id="btn-do-swap" onclick="completeSwap()">I'll Do It ✓</button>
+            <button class="btn-ghost" onclick="skipSwap()">Show Another</button>
+          </div>
+        </div>
+
+        <!-- Habit Fingerprint Mini -->
+        <div class="habit-card glass-card">
+          <h4>🧠 Your Habit Fingerprint</h4>
+          <p class="habit-subtitle">Top 3 carbon-heavy recurring habits</p>
+          <div class="habit-bars">
+            <div class="habit-bar-row">
+              <span class="habit-name">Beef dinners (3x/week)</span>
+              <div class="habit-bar"><div class="habit-fill" style="width:85%" data-color="warm"></div></div>
+              <span class="habit-val">18.6 kg/wk</span>
+            </div>
+            <div class="habit-bar-row">
+              <span class="habit-name">Car commute (5x/week)</span>
+              <div class="habit-bar"><div class="habit-fill" style="width:68%" data-color="amber"></div></div>
+              <span class="habit-val">14.2 kg/wk</span>
+            </div>
+            <div class="habit-bar-row">
+              <span class="habit-name">Hot showers (15 min avg)</span>
+              <div class="habit-bar"><div class="habit-fill" style="width:35%" data-color="cool"></div></div>
+              <span class="habit-val">4.8 kg/wk</span>
+            </div>
+          </div>
+          <p class="habit-insight">💡 <strong>Biggest lever:</strong> Cooking 2 of your 4 weekly delivery orders would save more CO₂ than giving up your car for a month.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ SURFACE: LENS ═══════ -->
+    <section id="surface-lens" class="surface">
+      <div class="lens-container">
+        <h2 class="surface-title">The Lens</h2>
+        <p class="surface-subtitle">Scan a receipt or type items to see their carbon cost instantly.</p>
+
+        <div class="lens-input-area glass-card">
+          <div class="lens-tabs">
+            <button class="lens-tab active" data-tab="type" onclick="switchLensTab('type')">⌨️ Type Items</button>
+            <button class="lens-tab" data-tab="paste" onclick="switchLensTab('paste')">📋 Paste Receipt</button>
+          </div>
+
+          <div class="lens-tab-content active" id="lens-type">
+            <div class="lens-input-group">
+              <input type="text" id="lens-item-input" placeholder="e.g., 500g beef mince, 1L whole milk, avocados..." class="lens-input" />
+              <button class="btn-accent" id="btn-scan" onclick="analyzeItems()">Analyze</button>
+            </div>
+            <div class="lens-quick-items">
+              <span class="quick-item" onclick="addQuickItem('500g beef mince')">🥩 Beef</span>
+              <span class="quick-item" onclick="addQuickItem('1L whole milk')">🥛 Milk</span>
+              <span class="quick-item" onclick="addQuickItem('1kg chicken breast')">🍗 Chicken</span>
+              <span class="quick-item" onclick="addQuickItem('1kg rice')">🍚 Rice</span>
+              <span class="quick-item" onclick="addQuickItem('6 eggs')">🥚 Eggs</span>
+              <span class="quick-item" onclick="addQuickItem('2 avocados')">🥑 Avocado</span>
+              <span class="quick-item" onclick="addQuickItem('1kg cheese')">🧀 Cheese</span>
+              <span class="quick-item" onclick="addQuickItem('500g coffee beans')">☕ Coffee</span>
+            </div>
+          </div>
+
+          <div class="lens-tab-content" id="lens-paste">
+            <textarea id="lens-receipt-input" class="lens-textarea" placeholder="Paste your receipt text here...&#10;&#10;Example:&#10;Beef Mince 500g — $8.99&#10;Whole Milk 1L — $2.49&#10;Cheddar Cheese 250g — $5.99&#10;White Bread — $3.50&#10;Avocados x2 — $4.00"></textarea>
+            <button class="btn-accent" onclick="analyzeReceipt()" style="margin-top:12px;">Analyze Receipt</button>
+          </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="lens-results" class="lens-results hidden">
+          <div class="lens-results-header glass-card">
+            <div class="lens-total">
+              <span class="lens-total-label">Total Carbon Cost</span>
+              <span class="lens-total-value" id="lens-total-co2">—</span>
+              <span class="lens-total-equiv" id="lens-total-equiv">—</span>
+            </div>
+          </div>
+          <div class="lens-items-list" id="lens-items-list">
+            <!-- Dynamically populated -->
+          </div>
+          <div class="lens-swap-suggestion glass-card" id="lens-swap-box">
+            <h4>🔄 Smart Swap Suggestion</h4>
+            <p id="lens-swap-text">—</p>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="lens-loading" class="lens-loading hidden">
+          <div class="loading-spinner"></div>
+          <p>Analyzing carbon footprint...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ SURFACE: SIMULATOR ═══════ -->
+    <section id="surface-simulator" class="surface">
+      <div class="simulator-container">
+        <h2 class="surface-title">What If?</h2>
+        <p class="surface-subtitle">Explore how one change ripples across your entire footprint.</p>
+
+        <div class="simulator-input-area glass-card">
+          <input type="text" id="sim-input" class="sim-input" placeholder="What if I went vegetarian 3 days a week?" />
+          <button class="btn-accent" id="btn-simulate" onclick="runSimulation()">Simulate</button>
+          <div class="sim-suggestions">
+            <button class="sim-chip" onclick="fillSimulation('What if I biked to work twice a week?')">🚲 Bike to work 2x/week</button>
+            <button class="sim-chip" onclick="fillSimulation('What if I switched to an electric car?')">⚡ Switch to EV</button>
+            <button class="sim-chip" onclick="fillSimulation('What if I went fully vegetarian?')">🥬 Go vegetarian</button>
+            <button class="sim-chip" onclick="fillSimulation('What if I reduced shower time to 5 minutes?')">🚿 Shorter showers</button>
+            <button class="sim-chip" onclick="fillSimulation('What if I bought only local produce?')">🏡 Buy local</button>
+            <button class="sim-chip" onclick="fillSimulation('What if I stopped fast fashion and bought secondhand?')">👗 Secondhand fashion</button>
+          </div>
+        </div>
+
+        <div id="sim-results" class="sim-results hidden">
+          <div class="sim-impact-grid">
+            <div class="sim-impact-card glass-card" id="sim-card-1m">
+              <span class="sim-period">1 Month</span>
+              <span class="sim-save" id="sim-1m-val">—</span>
+              <span class="sim-equiv" id="sim-1m-equiv">—</span>
+            </div>
+            <div class="sim-impact-card glass-card" id="sim-card-6m">
+              <span class="sim-period">6 Months</span>
+              <span class="sim-save" id="sim-6m-val">—</span>
+              <span class="sim-equiv" id="sim-6m-equiv">—</span>
+            </div>
+            <div class="sim-impact-card glass-card" id="sim-card-1y">
+              <span class="sim-period">1 Year</span>
+              <span class="sim-save" id="sim-1y-val">—</span>
+              <span class="sim-equiv" id="sim-1y-equiv">—</span>
+            </div>
+          </div>
+          <div class="sim-multiplier glass-card" id="sim-multiplier">
+            <h4>🌍 If Everyone in Your City Did This</h4>
+            <p id="sim-city-impact">—</p>
+          </div>
+          <div class="sim-detail glass-card" id="sim-detail">
+            <h4>How This Works</h4>
+            <p id="sim-explanation">—</p>
+          </div>
+        </div>
+
+        <div id="sim-loading" class="lens-loading hidden">
+          <div class="loading-spinner"></div>
+          <p>Running simulation...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ SURFACE: RIPPLE ═══════ -->
+    <section id="surface-ripple" class="surface">
+      <div class="ripple-container">
+        <h2 class="surface-title">Your Ripple</h2>
+        <p class="surface-subtitle">Every swap creates a ripple. Watch yours grow.</p>
+
+        <div class="ripple-visual-area">
+          <canvas id="ripple-canvas" width="400" height="400"></canvas>
+          <div class="ripple-center-label">
+            <span class="ripple-total" id="ripple-total">24.3 kg</span>
+            <span class="ripple-total-sub">CO₂ saved so far</span>
+          </div>
+        </div>
+
+        <div class="ripple-equiv-grid">
+          <div class="ripple-equiv glass-card">
+            <span class="equiv-icon">🌳</span>
+            <span class="equiv-val" id="equiv-trees">1.2</span>
+            <span class="equiv-label">trees growing for a year</span>
+          </div>
+          <div class="ripple-equiv glass-card">
+            <span class="equiv-icon">🚗</span>
+            <span class="equiv-val" id="equiv-driving">96 km</span>
+            <span class="equiv-label">of driving removed</span>
+          </div>
+          <div class="ripple-equiv glass-card">
+            <span class="equiv-icon">💡</span>
+            <span class="equiv-val" id="equiv-bulbs">810 hrs</span>
+            <span class="equiv-label">of LED bulbs powered</span>
+          </div>
+          <div class="ripple-equiv glass-card">
+            <span class="equiv-icon">🏠</span>
+            <span class="equiv-val" id="equiv-homes">1.8 days</span>
+            <span class="equiv-label">of home energy saved</span>
+          </div>
+        </div>
+
+        <div class="ripple-timeline glass-card">
+          <h4>Your Journey</h4>
+          <div class="timeline" id="ripple-timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot done"></div>
+              <div class="timeline-content">
+                <strong>Day 1</strong> — Started Orbit
+                <span class="timeline-sub">Set your baseline footprint</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot done"></div>
+              <div class="timeline-content">
+                <strong>Day 3</strong> — First swap: lentil bolognese
+                <span class="timeline-sub">Saved 6.2 kg CO₂</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot done"></div>
+              <div class="timeline-content">
+                <strong>Day 4</strong> — Biked to work
+                <span class="timeline-sub">Saved 3.1 kg CO₂</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot done"></div>
+              <div class="timeline-content">
+                <strong>Day 5</strong> — Scanned grocery receipt
+                <span class="timeline-sub">Found 2 high-impact swaps</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot active"></div>
+              <div class="timeline-content">
+                <strong>Day 7</strong> — 1 week streak! 🎉
+                <span class="timeline-sub">24.3 kg CO₂ saved total</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ SURFACE: CIRCLE ═══════ -->
+    <section id="surface-circle" class="surface">
+      <div class="circle-container">
+        <h2 class="surface-title">Your Circle</h2>
+        <p class="surface-subtitle">Climate action is a team sport. See how your community is doing.</p>
+
+        <div class="circle-hero glass-card">
+          <div class="circle-hero-stat">
+            <span class="circle-hero-val">2.3 tons</span>
+            <span class="circle-hero-label">saved by your building this month</span>
+          </div>
+          <div class="circle-hero-rank">
+            <span class="rank-badge">#4</span>
+            <span class="rank-label">in your district</span>
+          </div>
+        </div>
+
+        <div class="circle-challenge glass-card">
+          <h4>🎯 This Week's Challenge</h4>
+          <p class="challenge-desc">Your circle needs <strong>12 more plant-based meals</strong> to hit the weekly goal.</p>
+          <div class="challenge-progress">
+            <div class="challenge-bar">
+              <div class="challenge-fill" style="width: 68%"></div>
+            </div>
+            <span class="challenge-numbers">38 / 50 meals</span>
+          </div>
+          <button class="btn-accent" onclick="logMeal()">Log a Plant Meal 🌱</button>
+        </div>
+
+        <div class="circle-leaderboard glass-card">
+          <h4>Neighborhood Impact</h4>
+          <div class="leaderboard">
+            <div class="lb-row">
+              <span class="lb-rank">#1</span>
+              <span class="lb-name">Maple Street Co-op</span>
+              <span class="lb-val">3.8 tons</span>
+              <div class="lb-bar"><div class="lb-fill" style="width:100%"></div></div>
+            </div>
+            <div class="lb-row">
+              <span class="lb-rank">#2</span>
+              <span class="lb-name">River View Apartments</span>
+              <span class="lb-val">3.1 tons</span>
+              <div class="lb-bar"><div class="lb-fill" style="width:82%"></div></div>
+            </div>
+            <div class="lb-row">
+              <span class="lb-rank">#3</span>
+              <span class="lb-name">Oakwood Terrace</span>
+              <span class="lb-val">2.7 tons</span>
+              <div class="lb-bar"><div class="lb-fill" style="width:71%"></div></div>
+            </div>
+            <div class="lb-row highlight">
+              <span class="lb-rank">#4</span>
+              <span class="lb-name">Your Building ⭐</span>
+              <span class="lb-val">2.3 tons</span>
+              <div class="lb-bar"><div class="lb-fill" style="width:61%"></div></div>
+            </div>
+            <div class="lb-row">
+              <span class="lb-rank">#5</span>
+              <span class="lb-name">Cedar Heights</span>
+              <span class="lb-val">1.9 tons</span>
+              <div class="lb-bar"><div class="lb-fill" style="width:50%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="circle-members glass-card">
+          <h4>Circle Activity</h4>
+          <div class="activity-feed" id="activity-feed">
+            <div class="activity-item">
+              <div class="activity-avatar" style="background: linear-gradient(135deg, #a78bfa, #6ee7b7);">A</div>
+              <div class="activity-text">
+                <strong>Anonymous</strong> swapped to oat milk
+                <span class="activity-time">2 hours ago</span>
+              </div>
+              <span class="activity-save">-1.2 kg</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar" style="background: linear-gradient(135deg, #f472b6, #fbbf24);">M</div>
+              <div class="activity-text">
+                <strong>Anonymous</strong> biked to work
+                <span class="activity-time">5 hours ago</span>
+              </div>
+              <span class="activity-save">-3.1 kg</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar" style="background: linear-gradient(135deg, #38bdf8, #818cf8);">K</div>
+              <div class="activity-text">
+                <strong>Anonymous</strong> cooked instead of ordered
+                <span class="activity-time">yesterday</span>
+              </div>
+              <span class="activity-save">-2.4 kg</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar" style="background: linear-gradient(135deg, #fb923c, #f87171);">R</div>
+              <div class="activity-text">
+                <strong>Anonymous</strong> took a 5-min shower
+                <span class="activity-time">yesterday</span>
+              </div>
+              <span class="activity-save">-0.8 kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-nav" id="mobile-nav">
+      <button class="mob-nav-btn active" data-target="pulse" onclick="navigate('pulse')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+        <span>Pulse</span>
+      </button>
+      <button class="mob-nav-btn" data-target="lens" onclick="navigate('lens')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Lens</span>
+      </button>
+      <button class="mob-nav-btn" data-target="simulator" onclick="navigate('simulator')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>What If</span>
+      </button>
+      <button class="mob-nav-btn" data-target="ripple" onclick="navigate('ripple')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6" opacity="0.6"/><circle cx="12" cy="12" r="10" opacity="0.3"/></svg>
+        <span>Ripple</span>
+      </button>
+      <button class="mob-nav-btn" data-target="circle" onclick="navigate('circle')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Circle</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
